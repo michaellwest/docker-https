@@ -2,7 +2,7 @@ version: "2.4"
 
 services:
   monitor:
-    image: windows-hosts-writer:core-runtime-3.1
+    image: docker.pkg.github.com/michaellwest/docker-https/windows-hosts-writer:1.0
     volumes:
       - C:\windows\system32\drivers\etc:C:\driversetc
       - source: '\\.\pipe\docker_engine'
