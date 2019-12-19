@@ -1,6 +1,13 @@
 version: "2.4"
 
 services:
+  monitor:
+    image: windows-hosts-writer:core-runtime-3.1
+    volumes:
+      - C:\windows\system32\drivers\etc:C:\driversetc
+      - source: '\\.\pipe\docker_engine'
+        target: '\\.\pipe\docker_engine'
+        type: npipe
   sql:
     image: ${REGISTRY}sitecore-xm-sqldev:${SITECORE_VERSION}-windowsservercore-${WINDOWSSERVERCORE_VERSION}
     volumes:
@@ -31,6 +38,12 @@ services:
     ports:
       - "44001:80"
       - "44002:443"
+      - "80:80"
+      - "443:443"
+    networks:
+      default:
+        aliases:
+          - scms.dev.sxp.local
     environment:
       SITECORE_LICENSE: ${SITECORE_LICENSE}
       SITECORE_APPSETTINGS_ROLE:DEFINE: ContentManagement, Indexing
@@ -49,6 +62,7 @@ services:
     depends_on:
       - sql
       - solr
+      - monitor
 
 networks:
   default:

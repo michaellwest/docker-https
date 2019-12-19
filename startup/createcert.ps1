@@ -5,8 +5,8 @@ param (
 
 # setup certificate properties including the commonName (DNSName) property for Chrome 58+
 $certificate = New-SelfSignedCertificate `
-    -Subject localhost `
-    -DnsName localhost `
+    -Subject *.dev.sxp.local `
+    -DnsName *.dev.sxp.local `
     -KeyAlgorithm RSA `
     -KeyLength 2048 `
     -NotBefore (Get-Date) `
