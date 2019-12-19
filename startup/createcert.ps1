@@ -1,12 +1,13 @@
 param (
     [ValidateNotNullOrEmpty()][string]$certificatename = "cert",
-    [ValidateNotNullOrEmpty()][SecureString]$certificatepassword = ("b" | ConvertTo-SecureString -Force -AsPlainText)
+    [ValidateNotNullOrEmpty()][SecureString]$certificatepassword = ("b" | ConvertTo-SecureString -Force -AsPlainText),
+    [ValidateNotNullOrEmpty()][string]$dnsName = "*.dev.local"
  )
 
 # setup certificate properties including the commonName (DNSName) property for Chrome 58+
 $certificate = New-SelfSignedCertificate `
-    -Subject *.dev.sxp.local `
-    -DnsName *.dev.sxp.local `
+    -Subject $dnsName `
+    -DnsName $dnsName `
     -KeyAlgorithm RSA `
     -KeyLength 2048 `
     -NotBefore (Get-Date) `
