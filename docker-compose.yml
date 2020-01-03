@@ -18,8 +18,6 @@ services:
     environment:
       SA_PASSWORD: ${SQL_SA_PASSWORD}
       ACCEPT_EULA: "Y"
-    depends_on:
-      - monitor
 
   solr:
     image: ${REGISTRY}sitecore-xm-solr:${SITECORE_VERSION}-nanoserver-${NANOSERVER_VERSION}
@@ -30,8 +28,6 @@ services:
       - "44011:8983"
     environment:
       SOLR_LOG_LEVEL: ERROR
-    depends_on:
-      - monitor
 
   cm:
     image: ${REGISTRY}sitecore-xm-cm:${SITECORE_VERSION}-windowsservercore-${WINDOWSSERVERCORE_VERSION}
@@ -65,7 +61,6 @@ services:
     depends_on:
       - sql
       - solr
-      - monitor
 
 networks:
   default:
