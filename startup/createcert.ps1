@@ -4,6 +4,8 @@ param (
     [ValidateNotNullOrEmpty()][string]$dnsName = "*.dev.local"
 )
 
+. $PSScriptRoot\rsakeytools.ps1
+
 # setup certificate properties including the commonName (DNSName) property for Chrome 58+
 $certificate = New-SelfSignedCertificate `
     -Subject $dnsName `
@@ -59,5 +61,14 @@ $content = @(
 $content | Out-File -FilePath $cerFilePath -Encoding ascii
 
 $keyPasswordFilePath = $tmpPath + "\" + $certificatename + ".key"
-& "C:\Program Files\Git\usr\bin\openssl.exe" pkcs12 -in $pfxFilePath -nocerts -nodes -out $keyPasswordFilePath -passin pass:$unsecuredPassword
+$parameters = $certificate.PrivateKey.ExportParameters($true)
+$data = [RSAKeyUtils]::PrivateKeyToPKCS8($parameters)
+$content = @(
+    '-----BEGIN PRIVATE KEY-----'
+    [System.Convert]::ToBase64String($data, 'InsertLineBreaks')
+    '-----END PRIVATE KEY-----'
+)
+
+$content | Out-File -FilePath $keyPasswordFilePath -Encoding ascii
+#& "C:\Program Files\Git\usr\bin\openssl.exe" pkcs12 -in $pfxFilePath -nocerts -nodes -out $keyPasswordFilePath -passin pass:$unsecuredPassword
 #& "C:\Program Files\Git\usr\bin\openssl.exe" pkcs12 -in $pfxFilePath -clcerts -nokeys -out $cerFilePath -passin pass:$unsecuredPassword
