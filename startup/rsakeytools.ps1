@@ -1,3 +1,14 @@
+<#
+  .SYNPOSIS
+    Convert a PrivateKey from the certificate store into a PKCS8 formatted file.
+    
+  .LINK
+    Found C# version here https://gist.github.com/chenrui1988/6b104a010172786dbcbc0aafc466d291/
+    
+  .NOTES
+    Michael West
+#> 
+
 class RSAKeyUtils
 {
 	static [byte[]] PrivateKeyToPKCS8([System.Security.Cryptography.RSAParameters]$privateKey)
