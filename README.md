@@ -1,3 +1,4 @@
+
 # Docker with HTTPS
 
 This repository provides an example on how to configure a website running in IIS hosted in Docker to make use of a certificate.
@@ -8,6 +9,10 @@ There are a few things to have in place when getting started.
 
 * Docker images built for use with the `docker-compose.yml`. The version included assumes images built for Sitecore are used.
 * The `createcert.ps1` is run on the workstation with elevated privileges. The files `cert.password.txt` and `cert.pfx` are created in the startup directory and copied to the container on startup.
+  * Usages: `./createcert.ps1`
+  * Usages: `./createcert.ps1 -dnsNameList "*.dev.com"`
+  * Usages: `./createcert.ps1 -dnsNameList "*.dev.com", "*.dev2.com", "*.devn.com"`
+
 
 ## Running
 
