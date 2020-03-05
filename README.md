@@ -13,6 +13,22 @@ There are a few things to have in place when getting started.
   * Usages: `./createcert.ps1 -dnsNameList "*.dev.com"`
   * Usages: `./createcert.ps1 -dnsNameList "*.dev.com", "*.dev2.com", "*.devn.com"`
 
+### Customize
+
+If you wish to change the entrypoint script you can do the following:
+
+**Set Entrypoint:**
+
+```
+entrypoint: powershell.exe -NoLogo -NoProfile -Command "& C:\\startup\\startup.ps1 -EntryPointScriptPath 'C:\\customtools\\Development.ps1'"
+```
+
+**Set Volume (optional):**
+
+```
+volumes:
+  - .\customtools:C:\customtools
+```
 
 ## Running
 
