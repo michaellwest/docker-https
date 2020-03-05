@@ -5,4 +5,5 @@ data/**
 !data/**/*/.gitkeep
 src/**/*
 !src/**/*/.gitkeep
-
+certs/**/*
+!certs/**/*/.gitkeep
