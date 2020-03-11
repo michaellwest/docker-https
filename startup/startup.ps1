@@ -22,11 +22,11 @@ function Set-HttpBinding {
     if ($null -eq (Get-WebBinding -Name $siteName | Where-Object { $_.BindingInformation -eq "*:443:$($hostHeader)" })) {
         Write-Host "Adding a new HTTPS binding for $($siteName)"
         $securePassword = (Get-Content -Path C:\startup\cert.password.txt) | ConvertTo-SecureString -AsPlainText -Force
-        $cert = Import-PfxCertificate -Password $securePassword -CertStoreLocation Cert:\LocalMachine\My -FilePath C:\startup\cert.pfx   
+        $cert = Import-PfxCertificate -Password $securePassword -CertStoreLocation Cert:\LocalMachine\root -FilePath C:\startup\cert.pfx   
         $thumbprint = $cert.Thumbprint
         $binding = New-WebBinding -Name $siteName -Protocol https -IPAddress * -Port 443 -HostHeader $hostHeader
         $binding = Get-WebBinding -Name $siteName -Protocol https
-        $binding.AddSslCertificate($thumbprint, "my")
+        $binding.AddSslCertificate($thumbprint, "root")
     } else {
         Write-Host "HTTPS binding for $($siteName) already exists"
     }
