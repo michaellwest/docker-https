@@ -5,7 +5,7 @@ This repository provides an example on how to configure a website running in IIS
 
 ## Setup
 
-There are a few things to have in place when getting started.
+There are a few things to have in place when getting started. The `createcert.ps1` requires Windows PowerShell 5.1.
 
 * Docker images built for use with the `docker-compose.yml`. The version included assumes images built for Sitecore are used.
 * The `createcert.ps1` is run on the workstation with elevated privileges. The files `cert.password.txt` and `cert.pfx` are created in the startup directory and copied to the container on startup.
