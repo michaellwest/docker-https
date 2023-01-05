@@ -1,68 +1,25 @@
-version: "2.4"
+version: "3.9"
 
 services:
-  monitor:
-    image: rahnemann/windows-hosts-writer:1.2-nanoserver-${NANOSERVER_VERSION}
+  whw:
+    image: ${WHW_IMAGE}
     volumes:
       - C:\windows\system32\drivers\etc:C:\driversetc
-      - source: '\\.\pipe\docker_engine'
-        target: '\\.\pipe\docker_engine'
+      - source: '\\.\pipe\docker_engine\'
+        target: '\\.\pipe\docker_engine\'
         type: npipe
-  sql:
-    image: ${REGISTRY}sitecore-xm-sqldev:${SITECORE_VERSION}-windowsservercore-${WINDOWSSERVERCORE_VERSION}
-    volumes:
-      - .\data\sql:C:\Data
-    mem_limit: 2GB
-    ports:
-      - "44010:1433"
-    environment:
-      SA_PASSWORD: ${SQL_SA_PASSWORD}
-      ACCEPT_EULA: "Y"
-
-  solr:
-    image: ${REGISTRY}sitecore-xm-solr:${SITECORE_VERSION}-nanoserver-${NANOSERVER_VERSION}
-    volumes:
-      - .\data\solr:C:\Data
-    mem_limit: 1GB
-    ports:
-      - "44011:8983"
-    environment:
-      SOLR_LOG_LEVEL: ERROR
-
-  cm:
-    image: ${REGISTRY}sitecore-xm-cm:${SITECORE_VERSION}-windowsservercore-${WINDOWSSERVERCORE_VERSION}
+  web:
+    image: ${IIS_BASE_IMAGE}
     entrypoint: powershell.exe -NoLogo -NoProfile -File C:\\startup\\startup.ps1
     volumes:
-      - .\src:C:\src
-      - .\startup:C:\startup
+      - .\docker\startup:C:\startup
+      - .\docker\certs:C:\certs
     ports:
-      - "44001:80"
-      - "44002:443"
+      - "80:80"
+      - "443:443"
     networks:
       default:
         aliases:
-          - docker-https.dev.local
+          - ${HOST_HEADER}
     environment:
-      HOST_HEADER: docker-https.dev.local # multiple hosts to be separated by semicolon (;). E.g.: host1.dev.local;host2.dev.local
-      SITECORE_LICENSE: ${SITECORE_LICENSE}
-      SITECORE_APPSETTINGS_ROLE:DEFINE: ContentManagement, Indexing
-      SITECORE_CONNECTIONSTRINGS_CORE: Data Source=sql;Initial Catalog=Sitecore.Core;User ID=sa;Password=${SQL_SA_PASSWORD}
-      SITECORE_CONNECTIONSTRINGS_SECURITY: Data Source=sql;Initial Catalog=Sitecore.Core;User ID=sa;Password=${SQL_SA_PASSWORD}
-      SITECORE_CONNECTIONSTRINGS_MASTER: Data Source=sql;Initial Catalog=Sitecore.Master;User ID=sa;Password=${SQL_SA_PASSWORD}
-      SITECORE_CONNECTIONSTRINGS_WEB: Data Source=sql;Initial Catalog=Sitecore.Web;User ID=sa;Password=${SQL_SA_PASSWORD}
-      SITECORE_CONNECTIONSTRINGS_EXPERIENCEFORMS: Data Source=sql;Initial Catalog=Sitecore.ExperienceForms;User ID=sa;Password=${SQL_SA_PASSWORD}
-      SITECORE_CONNECTIONSTRINGS_SOLR.SEARCH: http://solr:8983/solr
-      SITECORE_APPSETTINGS_TELERIK.ASYNCUPLOAD.CONFIGURATIONENCRYPTIONKEY: ${TELERIK_ENCRYPTION_KEY}
-      SITECORE_APPSETTINGS_TELERIK.UPLOAD.CONFIGURATIONHASHKEY: ${TELERIK_ENCRYPTION_KEY}
-      SITECORE_APPSETTINGS_TELERIK.WEB.UI.DIALOGPARAMETERSENCRYPTIONKEY: ${TELERIK_ENCRYPTION_KEY}
-      ENTRYPOINT_STDOUT_IIS_ACCESS_LOG_ENABLED: 'false'
-      ENTRYPOINT_STDOUT_IIS_ERROR_LOG_ENABLED: 'false'
-      ENTRYPOINT_STDOUT_SITECORE_LOG_ENABLED: 'true'
-    depends_on:
-      - sql
-      - solr
-
-networks:
-  default:
-    external:
-      name: nat
+      HOST_HEADER: ${HOST_HEADER} # multiple hosts to be separated by semicolon (;). E.g.: host1.dev.local;host2.dev.local
